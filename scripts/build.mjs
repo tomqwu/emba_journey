@@ -165,6 +165,7 @@ export function build(root = process.cwd()) {
   const config = JSON.parse(
     fs.readFileSync(path.join(root, "site/config.json"), "utf8"),
   );
+  config.stylesheetVersion = crypto.createHash("sha256").update(fs.readFileSync(path.join(root, "site/style.css"))).digest("hex").slice(0, 12);
   if (!/^\/[a-zA-Z0-9/_-]*\/$/.test(config.basePath)) fail("Invalid basePath");
   const notes = loadNotes(root, config);
   const published = notes
