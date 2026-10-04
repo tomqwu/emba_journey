@@ -1,4 +1,16 @@
 export const zh = {
+  Practice: "练习",
+  "Make the ideas stick.": "让知识留下来。",
+  "Recall, explain, and apply — then return for a spaced review.":
+    "回忆、解释、应用，再通过间隔复习巩固知识。",
+  "Start a practice session →": "开始练习 →",
+  "Explore the learning methods →": "了解学习方法 →",
+  "Test your understanding": "检验你的理解",
+  "Practice this note →": "练习这篇笔记 →",
+  "Retrieval Practice": "提取练习",
+  "Spaced Review": "间隔复习",
+  "Self Explanation": "自我解释",
+  "Experiential Learning": "经验学习",
   "Skip to content": "跳到正文",
   "A personal learning library": "个人学习知识库",
   "Main navigation": "主导航",

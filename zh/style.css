@@ -1349,3 +1349,253 @@ html[lang="zh-Hans"] .note-card h3 {
     font-size: 43px;
   }
 }
+
+.practice-banner {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  border: 1px solid #cfdec3;
+  background: #eaf1e2;
+  padding: 20px 24px;
+  border-radius: 8px;
+  margin: 25px 0;
+}
+.practice-banner > div {
+  flex: 1;
+}
+.practice-banner strong {
+  font-size: 15px;
+}
+.practice-banner p {
+  font-size: 12px;
+  color: var(--muted);
+  margin: 5px 0 0;
+}
+.practice-banner a {
+  font-size: 11px;
+  font-weight: 600;
+}
+.practice-layout {
+  max-width: 1000px;
+  padding-top: 40px;
+  padding-bottom: 50px;
+}
+.practice-layout > h1 {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: clamp(38px, 5vw, 62px);
+  line-height: 1.2;
+  margin: 12px 0 18px;
+}
+.learning-steps {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin: 28px 0;
+}
+.learning-steps span {
+  font-size: 11px;
+  padding: 12px;
+  background: #e9efdf;
+  border: 1px solid #d4e0c9;
+  border-radius: 5px;
+}
+.practice-toolbar {
+  display: flex;
+  align-items: end;
+  gap: 18px;
+  flex-wrap: wrap;
+  margin: 25px 0;
+}
+.practice-toolbar label {
+  display: grid;
+  gap: 6px;
+  font-size: 11px;
+  flex: 1;
+}
+.practice-toolbar select {
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  background: white;
+  color: var(--ink);
+  font-size: 12px;
+  padding: 9px;
+  width: 100%;
+  max-width: 100%;
+}
+.practice-layout button {
+  border: 1px solid #a2b893;
+  border-radius: 5px;
+  background: white;
+  color: var(--ink);
+  padding: 9px 13px;
+  font-size: 11px;
+  cursor: pointer;
+}
+.practice-layout button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.practice-layout .primary-button {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: white;
+}
+.practice-layout textarea {
+  width: 100%;
+  border: 1px solid #b7c7ae;
+  border-radius: 5px;
+  background: white;
+  padding: 12px;
+  color: var(--ink);
+  font-size: 14px;
+  line-height: 1.65;
+  resize: vertical;
+  font-family: var(--sans);
+}
+#practice-status {
+  font-size: 12px;
+  color: var(--muted);
+  margin: 22px 0;
+}
+.review-card,
+.application-panel {
+  border: 1px solid var(--line);
+  background: white;
+  border-radius: 9px;
+  padding: 27px;
+  margin: 20px 0;
+}
+.review-card h2,
+.application-panel h2 {
+  font-family: var(--serif);
+  font-size: 31px;
+  line-height: 1.2;
+  font-weight: 400;
+  margin: 10px 0 15px;
+}
+.review-card h3 {
+  font-size: 18px;
+  line-height: 1.55;
+  margin: 22px 0;
+}
+.review-card label,
+.application-panel label {
+  font-size: 11px;
+  font-weight: 600;
+  display: block;
+  margin: 12px 0 8px;
+}
+.review-card > p,
+.application-panel > p {
+  font-size: 13px;
+  color: var(--muted);
+}
+.practice-hint {
+  font-size: 11px !important;
+}
+.review-card fieldset {
+  border: 1px solid #d3dfc6;
+  border-radius: 6px;
+  margin: 20px 0;
+  padding: 15px;
+  display: flex;
+  gap: 9px;
+  flex-wrap: wrap;
+}
+.review-card legend {
+  font-size: 11px;
+  padding: 0 6px;
+}
+.review-card h4 {
+  font-size: 13px;
+  margin: 20px 0 7px;
+}
+.review-card #review-answer {
+  font-size: 14px;
+  line-height: 1.75;
+  border-left: 3px solid var(--accent);
+  padding-left: 15px;
+}
+.review-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  border-top: 1px solid var(--line);
+  padding-top: 16px;
+  margin-top: 25px;
+}
+.review-bottom a {
+  font-size: 11px;
+}
+.application-panel form {
+  margin-top: 22px;
+}
+.application-panel form button {
+  margin-top: 17px;
+}
+.learning-note {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 25px;
+  padding-top: 17px;
+  border-top: 1px solid var(--line);
+}
+.learning-note button {
+  display: block;
+  margin-top: 20px;
+}
+.practice-layout #review-empty h2 {
+  font-family: var(--serif);
+  font-size: 30px;
+  font-weight: 400;
+}
+@media (max-width: 800px) {
+  .practice-banner {
+    flex-wrap: wrap;
+  }
+  .practice-banner > div {
+    flex-basis: 100%;
+  }
+  .learning-steps {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 550px) {
+  .practice-toolbar {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 13px;
+  }
+  .review-card,
+  .application-panel {
+    padding: 19px;
+  }
+  .practice-layout > h1 {
+    font-size: 41px;
+  }
+  .learning-steps span {
+    font-size: 10px;
+  }
+  .review-card h2,
+  .application-panel h2 {
+    font-size: 27px;
+  }
+  .review-card h3 {
+    font-size: 16px;
+  }
+  .review-card fieldset {
+    flex-direction: column;
+  }
+  .practice-banner {
+    padding: 18px;
+  }
+  .site-header nav {
+    gap: 19px;
+    font-size: 10px;
+  }
+  .review-bottom {
+    flex-wrap: wrap;
+  }
+}
