@@ -1,0 +1,16 @@
+import { escape, shell } from "./views.mjs";
+import { learningText } from "../site/learning-i18n.mjs";
+export function learningPage(config, cards) {
+  const l = learningText[config.locale || "en"],
+    base = config.basePath;
+  return shell(
+    config,
+    l.title,
+    `<main id="main" class="practice-layout"><div class="eyebrow">${l.eyebrow}</div><h1>${l.title}</h1><p class="lead">${l.lead}</p><div class="learning-steps"><span>01 · ${config.locale === "zh" ? "回忆" : "Recall"}</span><span>02 · ${config.locale === "zh" ? "比较与解释" : "Compare & explain"}</span><span>03 · ${config.locale === "zh" ? "应用与反思" : "Apply & reflect"}</span><span>04 · ${config.locale === "zh" ? "间隔复习" : "Review later"}</span></div><div class="practice-toolbar"><label>${l.queue}<select id="review-mode"><option value="due">${l.due}</option><option value="all">${l.all}</option></select></label><label>${l.note}<select id="review-note"><option value="all">${config.locale === "zh" ? "全部笔记" : "All notes"}</option>${[...new Map(cards.map((c) => [c.noteId, c.noteTitle]))].map(([id, title]) => `<option value="${id}">${escape(title)}</option>`).join("")}</select></label><button id="export-learning">${l.export}</button></div><p id="practice-status" role="status" aria-live="polite"></p><section id="review-card" class="review-card" hidden><div class="eyebrow" id="review-kind"></div><h2 id="review-title"></h2><p id="review-objective"></p><h3 id="review-prompt"></h3><label for="review-response">${l.attempt}</label><textarea id="review-response" rows="4" placeholder="${l.placeholder}"></textarea><p class="practice-hint">${l.limit}</p><button id="reveal-feedback" class="primary-button">${l.reveal}</button><div id="review-feedback" hidden><h4>${l.answer}</h4><p id="review-answer"></p><fieldset><legend>${l.self}</legend><button data-rating="again">${l.again}</button><button data-rating="partial">${l.partial}</button><button data-rating="confident">${l.confident}</button></fieldset></div><div class="review-bottom"><a id="review-source">${l.source}</a><button id="next-question">${l.next} →</button></div></section><div id="review-empty" class="empty" hidden><h2>${l.no}</h2><p>${l.noHint}</p></div><section id="application-panel" class="application-panel" hidden><div class="eyebrow">${config.locale === "zh" ? "从经历到下一次尝试" : "EXPERIENCE → NEXT EXPERIMENT"}</div><h2>${l.journal}</h2><p>${l.journalHint}</p><p id="application-context"></p><form id="reflection-form">${l.fields.map((text, i) => `<label for="reflection-${i}">${text}</label><textarea id="reflection-${i}" name="${["experience", "observation", "principle", "experiment", "outcome"][i]}" rows="2"></textarea>`).join("")}<button class="primary-button" type="submit">${l.save}</button></form></section><aside class="learning-note"><p>${l.local}</p><p>${l.schedule}</p><a href="${base}notes/learning-how-to-learn.html">${l.method}</a><button id="reset-learning">${l.remove}</button></aside><noscript><p>${config.locale === "zh" ? "练习需要 JavaScript。请查看学习方法笔记和来源材料。" : "Practice requires JavaScript. Read the learning-method guide and source notes instead."}</p></noscript></main>`,
+    {
+      active: "practice",
+      alternatePath: "learn.html",
+      script: `<script type="module" src="${base}practice.js"></script>`,
+    },
+  );
+}

@@ -199,3 +199,52 @@ test("published notes require a matching Chinese counterpart", () =>
     fs.rmSync(path.join(dir, "content/notes/zh/using-this-knowledge-base.md"));
     assert.throws(() => build(dir), /missing published Chinese translation/);
   }));
+
+test("practice data is bilingual with shared keys and revision IDs; feedback is omitted from reading pages", () =>
+  fixture((dir) => {
+    const { web } = build(dir);
+    const en = JSON.parse(
+      fs.readFileSync(path.join(web, "practice.json"), "utf8"),
+    );
+    const zh = JSON.parse(
+      fs.readFileSync(path.join(web, "zh/practice.json"), "utf8"),
+    );
+    assert.equal(en.length, 9);
+    assert.deepEqual(
+      en.map((c) => [c.key, c.version]),
+      zh.map((c) => [c.key, c.version]),
+    );
+    assert.match(
+      fs.readFileSync(path.join(web, "zh/learn.html"), "utf8"),
+      /查看参考答案并比较/,
+    );
+    assert.ok(
+      !fs
+        .readFileSync(
+          path.join(web, "notes/hofstede-cultural-dimensions.html"),
+          "utf8",
+        )
+        .includes("learning-practice"),
+    );
+    const file = path.join(
+      dir,
+      "content/notes/zh/hofstede-cultural-dimensions.md",
+    );
+    fs.writeFileSync(
+      file,
+      fs
+        .readFileSync(file, "utf8")
+        .replace(
+          "为什么国家文化评分不能证明某位同事将如何行动？",
+          "请解释国家文化评分不能证明某位同事将如何行动的原因。",
+        ),
+    );
+    build(dir);
+    const revised = JSON.parse(
+      fs.readFileSync(path.join(web, "practice.json"), "utf8"),
+    );
+    assert.notEqual(
+      revised.find((c) => c.id === "level-of-analysis").version,
+      en.find((c) => c.id === "level-of-analysis").version,
+    );
+  }));

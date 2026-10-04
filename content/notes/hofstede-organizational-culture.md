@@ -59,3 +59,32 @@ Awaiting learner input.
 [National cultural dimensions](hofstede-cultural-dimensions.md) examine a different level of culture. Keep country-level comparisons and organization-level observations distinct.
 
 Captured on 2026-10-04 as a companion to the learner's Hofstede website link. No company assessment or personal experience was supplied. Original research papers were not reviewed.
+
+```learning-practice
+objective: Separate organizational practices from national culture and assess
+  what the research can support.
+application: Choose one claimed organizational value. Find a repeated practice
+  that supports or contradicts it, then design a small observable change.
+questions:
+  - id: practices-and-values
+    kind: recall
+    prompt: What does the organizational framework examine, and how is it different
+      from the national-culture model?
+    answer: The organizational framework examines shared working practices. Its six
+      dimensions are separate from the national-culture dimensions; do not
+      replace observation of an organization with country-level scores.
+  - id: sample-limits
+    kind: explain
+    prompt: Why should the organizational model be applied cautiously outside its
+      original study?
+    answer: The original project studied 20 organizational units in Denmark and the
+      Netherlands during the 1980s. That sample did not represent all
+      organizations or countries; industry and context also affect practices.
+  - id: openness-test
+    kind: transfer
+    prompt: A company says it values openness. What observable evidence would you
+      inspect before agreeing?
+    answer: Look at how new employees get information, ask questions, and raise
+      concerns. Compare the stated value with repeated onboarding and meeting
+      practices, then test one concrete improvement.
+```

@@ -61,3 +61,9 @@ Routine work uses direct commits to `main`. If a PR is used, merge only after lo
 Switch EN / 中文 in the header. [English](https://tomqwu.github.io/emba_journey/) and [中文](https://tomqwu.github.io/emba_journey/zh/) have fully translated navigation, search, tags, notes, and diagrams. The language buttons retain filters and save your choice in browser storage.
 
 English Markdown lives in `content/notes/`; Chinese counterparts live in `content/notes/zh/` with matching filenames, ids, dates, categories, types, tags, related links, and publishing status. Build validation requires a Chinese counterpart for every published English note. See `site/DESIGN.md` for authoring conventions.
+
+## Learn and practice
+
+Open [Practice](https://tomqwu.github.io/emba_journey/learn.html) or [中文练习](https://tomqwu.github.io/emba_journey/zh/learn.html). Attempt the question, compare feedback, self-rate, and revisit later. Save reflections to connect ideas to actual work, and export them as Markdown. All progress is browser-local and shared across languages on that browser.
+
+The [learning-method guide](https://tomqwu.github.io/emba_journey/notes/learning-how-to-learn.html) explains the evidence, learning loop, schedule assumptions, and limitations. Source register: `site/LEARNING-RESEARCH.md`. New substantive notes include bilingual `learning-practice` fences using `templates/note.md`.

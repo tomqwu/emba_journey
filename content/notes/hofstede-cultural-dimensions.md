@@ -92,3 +92,33 @@ Awaiting learner input. No course, personal experience, or country comparison wa
 [Organizational culture](hofstede-organizational-culture.md) uses a separate framework about working practices. Its dimensions should not be confused with the national-culture dimensions.
 
 Captured on 2026-10-04 from the linked website pages. This is an introductory source summary with labeled applications, not a review of the full research literature. Country scores, videos, and external comparison tools were not analyzed.
+
+```learning-practice
+objective: Distinguish national patterns from individual behavior and use
+  cultural dimensions to ask better team questions.
+application: Choose a real cross-border interaction. What did you observe, what
+  else could explain it, and what small change could you test?
+questions:
+  - id: level-of-analysis
+    kind: recall
+    prompt: Why can a national cultural score not establish how one colleague will
+      behave?
+    answer: It describes a group-level pattern, with variation within countries.
+      Individual behavior also depends on personality, roles, incentives,
+      language, and context.
+  - id: uncertainty-and-risk
+    kind: explain
+    prompt: Explain why uncertainty avoidance and risk avoidance are different. Give
+      a possible business example.
+    answer: Uncertainty avoidance concerns ambiguity and the unknown, whereas risk
+      involves possible outcomes. A team could prefer a clearly specified
+      experiment that still has a chance of failure. The example is an
+      interpretation, not a country prediction.
+  - id: meeting-transfer
+    kind: transfer
+    prompt: A colleague avoids disagreeing in a meeting. What would you ask or
+      change before attributing this to nationality?
+    answer: Ask how decisions and disagreement are handled. Investigate role,
+      incentives, language, and psychological safety. Try collecting concerns
+      before meetings and observe whether participation changes.
+```

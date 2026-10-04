@@ -1,3 +1,6 @@
+import { extractPractice } from "./practice.mjs";
+import { learningPage } from "./learning-view.mjs";
+import crypto from "node:crypto";
 import { ui } from "../site/i18n.mjs";
 import fs from "node:fs";
 import path from "node:path";
@@ -112,13 +115,16 @@ export function loadNotes(root, config, locale = "en") {
   return notes;
 }
 export function renderBody(note, notes) {
+  extractPractice(note.body);
   const renderer = new marked.Renderer();
   const headingIds = new Map();
   const defaultCode = renderer.code.bind(renderer);
   renderer.code = (token) =>
-    token.lang === "concept-map"
-      ? renderConceptMap(token.text)
-      : defaultCode(token);
+    token.lang === "learning-practice"
+      ? ""
+      : token.lang === "concept-map"
+        ? renderConceptMap(token.text)
+        : defaultCode(token);
   renderer.link = ({ href, title, tokens }) => {
     let url = href;
     if (!/^(?:https?:|mailto:|#)/i.test(href)) {
@@ -196,6 +202,51 @@ export function build(root = process.cwd()) {
   for (const n of translated.filter((n) => n.status === "published"))
     if (!published.some((en) => en.id === n.id))
       fail(`${n.id}: missing published English note`);
+  const practiceVersions = new Map();
+  for (const n of published) {
+    const english = extractPractice(n.body),
+      chinese = extractPractice(translated.find((t) => t.id === n.id).body);
+    if (!!english !== !!chinese)
+      fail(`${n.id}: practice must exist in both languages`);
+    if (english) {
+      if (
+        JSON.stringify(english.questions.map((q) => [q.id, q.kind])) !==
+        JSON.stringify(chinese.questions.map((q) => [q.id, q.kind]))
+      )
+        fail(`${n.id}: practice IDs/kinds must match across languages`);
+      for (const q of english.questions)
+        practiceVersions.set(
+          n.id + ":" + q.id,
+          crypto
+            .createHash("sha256")
+            .update(
+              JSON.stringify([
+                q.prompt,
+                q.answer,
+                chinese.questions.find((c) => c.id === q.id).prompt,
+                chinese.questions.find((c) => c.id === q.id).answer,
+              ]),
+            )
+            .digest("hex")
+            .slice(0, 12),
+        );
+    }
+  }
+  const cardsFor = (list) =>
+    list.flatMap((n) => {
+      const p = extractPractice(n.body);
+      return p
+        ? p.questions.map((q) => ({
+            ...q,
+            key: n.id + ":" + q.id,
+            version: practiceVersions.get(n.id + ":" + q.id),
+            noteId: n.id,
+            noteTitle: n.title,
+            objective: p.objective,
+            application: p.application,
+          }))
+        : [];
+    });
   const output = path.join(root, "dist");
   fs.rmSync(output, { recursive: true, force: true });
   const base = config.basePath;
@@ -238,6 +289,20 @@ export function build(root = process.cwd()) {
       })),
     ),
   );
+  for (const [directory, localeConfig, list] of [
+    [web, config, published],
+    [zhWeb, zhConfig, zhNotes],
+  ]) {
+    const cards = cardsFor(list);
+    fs.writeFileSync(
+      path.join(directory, "learn.html"),
+      learningPage(localeConfig, cards),
+    );
+    fs.writeFileSync(
+      path.join(directory, "practice.json"),
+      JSON.stringify(cards),
+    );
+  }
   for (const directory of [web, zhWeb])
     for (const file of [
       "style.css",
@@ -245,6 +310,9 @@ export function build(root = process.cwd()) {
       "search.mjs",
       "i18n.mjs",
       "locale.js",
+      "practice.js",
+      "review.mjs",
+      "learning-i18n.mjs",
     ])
       fs.copyFileSync(
         path.join(root, "site", file),
