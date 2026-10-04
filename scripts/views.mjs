@@ -1,3 +1,4 @@
+import { localizeHTML } from "../site/i18n.mjs";
 export const escape = (value) =>
   String(value).replace(
     /[&<>"']/g,
@@ -34,15 +35,34 @@ const types = {
   reflection: "Reflection",
   guide: "Guide",
 };
+const readingMinutes = (text) =>
+  Math.max(
+    1,
+    Math.ceil(
+      (text.match(/\p{Script=Han}/gu) || []).length / 350 +
+        text
+          .replace(/\p{Script=Han}/gu, "")
+          .split(/\s+/)
+          .filter(Boolean).length /
+          220,
+    ),
+  );
 const heading = (text) => text.replace(/<[^>]*>/g, "");
 export function shell(
   config,
   title,
   body,
-  { script = "", active = "library" } = {},
+  { script = "", active = "library", alternatePath = "" } = {},
 ) {
   const base = config.basePath;
-  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="${escape(config.description)}"><meta name="theme-color" content="#233b35"><title>${escape(title)} · EMBA Journey</title><link rel="stylesheet" href="${base}style.css"></head><body><a class="skip" href="#main">Skip to content</a><header class="site-header"><a class="brand" href="${base}"><span class="brand-mark" aria-hidden="true">E<span>J</span></span><span>EMBA Journey<small>A personal learning library</small></span></a><nav aria-label="Main navigation"><a ${active === "library" ? 'aria-current="page"' : ""} href="${base}">Library</a><a ${active === "guide" ? 'aria-current="page"' : ""} href="${base}notes/using-this-knowledge-base.html">Capture guide</a><a class="repo-link" href="${escape(config.repository)}">GitHub <span aria-hidden="true">↗</span></a></nav></header>${body}<footer><span>EMBA Journey <span aria-hidden="true">·</span> Learn. Connect. Apply.</span><a href="${escape(config.repository)}/tree/main/content/notes">Browse the Markdown source ↗</a></footer>${script}</body></html>`;
+  const locale = config.locale || "en",
+    original = config.originalBasePath || base;
+  const suffix = alternatePath;
+  const switcher = `<div class="locale-switch" aria-label="${locale === "zh" ? "语言选择" : "Language selection"}"><a data-locale="en" lang="en" href="${original}${suffix}" ${locale === "en" ? 'aria-current="true"' : ""}>EN</a><a data-locale="zh" lang="zh-Hans" href="${original}zh/${suffix}" ${locale === "zh" ? 'aria-current="true"' : ""}>中文</a></div>`;
+  return localizeHTML(
+    `<!doctype html><html lang="${locale === "zh" ? "zh-Hans" : "en"}" data-locale="${locale}" data-base="${original}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="${escape(config.description)}"><meta name="theme-color" content="#233b35"><title>${escape(title)} · EMBA Journey</title><link rel="stylesheet" href="${base}style.css"></head><body><a class="skip" href="#main">Skip to content</a><header class="site-header"><a class="brand" href="${base}"><span class="brand-mark" aria-hidden="true">E<span>J</span></span><span>EMBA Journey<small>A personal learning library</small></span></a><nav aria-label="Main navigation"><a ${active === "library" ? 'aria-current="page"' : ""} href="${base}">Library</a><a ${active === "guide" ? 'aria-current="page"' : ""} href="${base}notes/using-this-knowledge-base.html">Capture guide</a><a class="repo-link" href="${escape(config.repository)}">GitHub <span aria-hidden="true">↗</span></a></nav>${switcher}</header>${body}<footer><span>EMBA Journey <span aria-hidden="true">·</span> Learn. Connect. Apply.</span><a href="${escape(config.repository)}/tree/main/content/notes">Browse the Markdown source ↗</a></footer>${script}<script type="module" src="${base}locale.js"></script></body></html>`,
+    locale,
+  );
 }
 export function home(config, notes) {
   const base = config.basePath;
@@ -62,7 +82,7 @@ export function home(config, notes) {
   const cards = notes
     .map((n) => {
       const category = config.categories.find((c) => c.id === n.category);
-      const minutes = Math.max(1, Math.ceil(n.body.split(/\s+/).length / 220));
+      const minutes = readingMinutes(n.body);
       return `<article class="note-card" data-note="${n.id}"><div class="card-labels"><a class="category-label" href="${base}?category=${n.category}#library">${escape(category.name)}</a><span class="type-badge">${types[n.type]}</span></div><h3><a href="${base}notes/${n.id}.html">${escape(n.title)}</a></h3><p>${escape(n.summary)}</p><div class="card-tags">${n.tags
         .slice(0, 3)
         .map(
@@ -99,7 +119,7 @@ export function notePage(config, n, notes, body) {
   const related = n.related
     .map((id) => notes.find((v) => v.id === id))
     .filter(Boolean);
-  const minutes = Math.max(1, Math.ceil(n.body.split(/\s+/).length / 220));
+  const minutes = readingMinutes(n.body);
   const contents = headings
     .map(([_, id, text]) => `<a href="#${escape(id)}">${heading(text)}</a>`)
     .join("");
@@ -113,6 +133,9 @@ export function notePage(config, n, notes, body) {
     config,
     n.title,
     `<main id="main" class="note-layout"><nav class="breadcrumbs" aria-label="Breadcrumb"><a href="${base}#library">Library</a><span aria-hidden="true">/</span><a href="${base}?category=${n.category}#library">${escape(category.name)}</a><span aria-hidden="true">/</span><span>${types[n.type]}</span></nav><div class="reading-grid"><div class="reading"><div class="note-heading"><div class="eyebrow">${escape(category.name)} <span class="type-badge">${types[n.type]}</span></div><h1>${escape(n.title)}</h1><p class="lead">${escape(n.summary)}</p><p class="meta">Updated ${escape(n.updated)} <span aria-hidden="true">·</span> ${minutes} min read${n.course ? ` <span aria-hidden="true">·</span> ${escape(n.course)}` : ""}</p><div class="tags">${n.tags.map((t) => `<a href="${base}?tag=${encodeURIComponent(t)}#library">${escape(label(t))}</a>`).join("")}</div></div><details class="mobile-toc"><summary>On this page</summary><nav aria-label="Mobile table of contents">${contents}</nav></details><article class="prose">${body}</article>${sources ? `<section id="page-sources" class="source-panel"><div class="eyebrow">TRACE THE IDEAS</div><h2>Sources & further reading</h2><ol>${sources}</ol></section>` : ""}${related.length ? `<section id="page-related" class="related-panel"><div class="eyebrow">KEEP EXPLORING</div><h2>Connected ideas</h2>${related.map((r) => `<a class="related-card" href="./${r.id}.html"><span><strong>${escape(r.title)}</strong><small>${escape(r.summary)}</small></span><span aria-hidden="true">→</span></a>`).join("")}</section>` : ""}<div class="note-footer"><span>Captured ${escape(n.date)}</span><a href="${escape(config.repository)}/blob/main/content/notes/${n.file}">View Markdown ↗</a></div></div><aside class="reading-sidebar"><div class="toc"><div class="eyebrow">ON THIS PAGE</div><nav aria-label="Table of contents">${contents}${sources ? '<a href="#page-sources">Sources & further reading</a>' : ""}${related.length ? '<a href="#page-related">Connected ideas</a>' : ""}</nav><a class="back-library" href="${base}?category=${n.category}#library">← Back to ${escape(category.name)}</a></div></aside></div></main>`,
-    { active: n.type === "guide" ? "guide" : "note" },
+    {
+      active: n.type === "guide" ? "guide" : "note",
+      alternatePath: `notes/${n.id}.html`,
+    },
   );
 }

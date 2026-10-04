@@ -1,3 +1,5 @@
+import { ui, resultText } from "./i18n.mjs";
+const locale = document.documentElement.dataset.locale || "en";
 import { filterNotes, sortNotes } from "./search.mjs";
 const input = document.querySelector("#search");
 const categories = [...document.querySelectorAll("button[data-category]")];
@@ -57,13 +59,19 @@ try {
     const current = categories.find((b) => b.dataset.category === category);
     document.querySelector("#library-heading").textContent =
       category === "all"
-        ? "All learning"
+        ? ui(locale, "All learning")
         : current.querySelector("span:nth-child(2)").textContent;
     document.querySelector("#category-description").textContent =
       current.dataset.description ||
-      "Browse ideas across subjects. Follow a tag to find connections.";
-    document.querySelector("#result-count").textContent =
-      `${result.length} ${result.length === 1 ? "note" : "notes"}${input.value ? " matching your search" : ""}`;
+      ui(
+        locale,
+        "Browse ideas across subjects. Follow a tag to find connections.",
+      );
+    document.querySelector("#result-count").textContent = resultText(
+      locale,
+      result.length,
+      input.value,
+    );
     document.querySelector("#empty").hidden = result.length > 0;
     document.querySelector("#clear").hidden =
       !input.value &&
@@ -76,7 +84,10 @@ try {
     const addChip = (name, remove) => {
       const button = document.createElement("button");
       button.textContent = name + " ×";
-      button.setAttribute("aria-label", "Remove filter: " + name);
+      button.setAttribute(
+        "aria-label",
+        (locale === "zh" ? "移除筛选：" : "Remove filter: ") + name,
+      );
       button.addEventListener("click", () => {
         remove();
         update("push");
@@ -92,7 +103,10 @@ try {
     if (type.value !== "all")
       addChip(type.selectedOptions[0].textContent, () => (type.value = "all"));
     if (input.value)
-      addChip("Search: " + input.value, () => (input.value = ""));
+      addChip(
+        (locale === "zh" ? "搜索：" : "Search: ") + input.value,
+        () => (input.value = ""),
+      );
     const p = new URLSearchParams();
     if (input.value) p.set("q", input.value);
     if (category !== "all") p.set("category", category);
@@ -167,7 +181,9 @@ try {
   update();
 } catch (e) {
   document.querySelector("#result-count").textContent =
-    "Search could not load. You can still open the notes below. Reload to retry.";
+    locale === "zh"
+      ? "搜索加载失败。仍可打开下方笔记，请刷新后重试。"
+      : "Search could not load. You can still open the notes below. Reload to retry.";
   document
     .querySelectorAll(".library-sidebar button,.library select,.library input")
     .forEach((el) => (el.disabled = true));

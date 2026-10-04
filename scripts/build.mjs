@@ -1,10 +1,11 @@
+import { ui } from "../site/i18n.mjs";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { parse } from "yaml";
 import { marked } from "marked";
 import sanitize from "sanitize-html";
-import { home, notePage, shell } from "./views.mjs";
+import { home, notePage, shell, label } from "./views.mjs";
 import { renderConceptMap } from "./diagram.mjs";
 
 export const escape = (value) =>
@@ -18,8 +19,12 @@ export const escape = (value) =>
 const fail = (message) => {
   throw new Error(message);
 };
-export function loadNotes(root, config) {
-  const directory = path.join(root, "content/notes");
+export function loadNotes(root, config, locale = "en") {
+  const directory = path.join(
+    root,
+    "content/notes",
+    locale === "zh" ? "zh" : "",
+  );
   const notes = fs
     .readdirSync(directory)
     .filter((f) => f.endsWith(".md"))
@@ -163,6 +168,34 @@ export function build(root = process.cwd()) {
     );
   // Validate body links for every note, including drafts, before replacing output.
   const bodies = new Map(notes.map((n) => [n.id, renderBody(n, notes)]));
+  const zhConfig = {
+    ...config,
+    locale: "zh",
+    originalBasePath: config.basePath,
+    basePath: config.basePath + "zh/",
+    description: config.descriptionZh,
+    categories: config.categories.map((c) => ({
+      ...c,
+      name: c.nameZh,
+      description: c.descriptionZh,
+    })),
+  };
+  const translated = loadNotes(root, zhConfig, "zh");
+  for (const n of published) {
+    const match = translated.find(
+      (t) => t.id === n.id && t.status === "published",
+    );
+    if (!match) fail(`${n.id}: missing published Chinese translation`);
+    for (const field of ["category", "type", "date", "updated"])
+      if (n[field] !== match[field])
+        fail(`${n.id}: translation ${field} must match English`);
+    for (const field of ["tags", "related"])
+      if (JSON.stringify(n[field]) !== JSON.stringify(match[field]))
+        fail(`${n.id}: translation ${field} must match English`);
+  }
+  for (const n of translated.filter((n) => n.status === "published"))
+    if (!published.some((en) => en.id === n.id))
+      fail(`${n.id}: missing published English note`);
   const output = path.join(root, "dist");
   fs.rmSync(output, { recursive: true, force: true });
   const base = config.basePath;
@@ -184,8 +217,48 @@ export function build(root = process.cwd()) {
       })),
     ),
   );
-  for (const file of ["style.css", "app.js", "search.mjs"])
-    fs.copyFileSync(path.join(root, "site", file), path.join(web, file));
+  const zhNotes = translated.filter((n) => n.status === "published");
+  const zhWeb = path.join(web, "zh");
+  fs.mkdirSync(path.join(zhWeb, "notes"), { recursive: true });
+  fs.writeFileSync(path.join(zhWeb, "index.html"), home(zhConfig, zhNotes));
+  for (const n of zhNotes)
+    fs.writeFileSync(
+      path.join(zhWeb, "notes", `${n.id}.html`),
+      notePage(zhConfig, n, zhNotes, renderBody(n, translated)),
+    );
+  fs.writeFileSync(
+    path.join(zhWeb, "search.json"),
+    JSON.stringify(
+      zhNotes.map(({ body, ...n }) => ({
+        ...n,
+        categoryLabel: zhConfig.categories.find((c) => c.id === n.category)
+          .name,
+        text: body,
+        tagLabels: n.tags.map((t) => ui("zh", label(t))),
+      })),
+    ),
+  );
+  for (const directory of [web, zhWeb])
+    for (const file of [
+      "style.css",
+      "app.js",
+      "search.mjs",
+      "i18n.mjs",
+      "locale.js",
+    ])
+      fs.copyFileSync(
+        path.join(root, "site", file),
+        path.join(directory, file),
+      );
+  fs.writeFileSync(
+    path.join(zhWeb, "404.html"),
+    shell(
+      zhConfig,
+      "Page not found",
+      `<main id="main" class="reading"><h1>This note could not be found.</h1><p><a href="${zhConfig.basePath}">Return to the knowledge library</a></p></main>`,
+      { alternatePath: "404.html" },
+    ),
+  );
   // Local preview keeps the production subpath; deployment strips this wrapper.
   fs.writeFileSync(path.join(output, ".nojekyll"), "");
   fs.writeFileSync(path.join(web, ".nojekyll"), "");

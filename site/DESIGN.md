@@ -38,3 +38,9 @@ The schema requires a title and 2–6 steps, each with a label and detail. Capti
 Use the green/ivory palette, editorial headings, compact metadata, and readable body text. Diagrams should clarify a relationship; decorative artwork should be limited. Native HTML links and details elements keep navigation usable without JavaScript; client filtering requires JavaScript and reports an index-loading failure.
 
 After renderer changes run `npm run check`, then inspect desktop and phone layouts, search, combined filters, resetting filters, URL restoration/back navigation, note anchors, related links, and diagrams. Build and deploy locally with the existing scripts; never add GitHub Actions workflows.
+
+## English and Chinese
+
+English pages retain existing URLs; Simplified Chinese pages live under `/zh/`. Every published English note must have a Chinese Markdown counterpart with the same filename and stable metadata identifiers. Translate titles, summaries, all sections, diagram labels/captions, source labels, and course names when appropriate. Retain source URLs and clearly identified English technical terms. The build checks matching published notes and shared identifiers/dates before generating output.
+
+The header switch links to the same note in the other language and preserves current library filters. Explicit language selections are stored locally when browser storage is available. A saved Chinese preference redirects external visits to default English routes; explicit Chinese URLs remain Chinese. Native language links work with JavaScript disabled. Both language versions have their own search index, including translated tag labels. Add translations to `site/i18n.mjs` for new interface strings and topic labels, and `nameZh` / `descriptionZh` for new categories.

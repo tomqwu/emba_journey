@@ -55,3 +55,9 @@ Deployment re-runs local checks, requires a clean `main` matching the fetched `o
 After deployment, check the live home page and changed notes. Hosting propagation can take a few minutes. A successful branch push alone does not confirm live availability. If a step fails, the agent reports it immediately, repairs what it can, and asks about unresolved blockers.
 
 Routine work uses direct commits to `main`. If a PR is used, merge only after local tests and required checks pass. A blocked PR is reported and closed with its branch preserved; no task-created PR remains open.
+
+## Languages
+
+Switch EN / 中文 in the header. [English](https://tomqwu.github.io/emba_journey/) and [中文](https://tomqwu.github.io/emba_journey/zh/) have fully translated navigation, search, tags, notes, and diagrams. The language buttons retain filters and save your choice in browser storage.
+
+English Markdown lives in `content/notes/`; Chinese counterparts live in `content/notes/zh/` with matching filenames, ids, dates, categories, types, tags, related links, and publishing status. Build validation requires a Chinese counterpart for every published English note. See `site/DESIGN.md` for authoring conventions.

@@ -26,6 +26,7 @@ export function filterNotes(
             n.course,
             n.text,
             ...n.tags,
+            ...(n.tagLabels || []),
           ].join(" "),
         ).includes(term),
       ),

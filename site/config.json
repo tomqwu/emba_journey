@@ -4,14 +4,69 @@
   "basePath": "/emba_journey/",
   "repository": "https://github.com/tomqwu/emba_journey",
   "categories": [
-    {"id": "strategy", "name": "Strategy", "description": "Competitive advantage, business models, and strategic choices"},
-    {"id": "leadership", "name": "Leadership & People", "description": "Teams, culture, negotiation, and organizational change"},
-    {"id": "finance", "name": "Finance & Accounting", "description": "Financial decisions, valuation, and performance"},
-    {"id": "marketing", "name": "Marketing & Customers", "description": "Customer insight, positioning, and growth"},
-    {"id": "operations", "name": "Operations & Execution", "description": "Processes, supply chains, and delivery"},
-    {"id": "innovation", "name": "Innovation & Technology", "description": "Entrepreneurship, digital transformation, and AI"},
-    {"id": "economics", "name": "Economics & Global Business", "description": "Markets, institutions, and international business"},
-    {"id": "decision-making", "name": "Decision Making & Analytics", "description": "Evidence, models, and choices under uncertainty"},
-    {"id": "reflection", "name": "Personal Reflections", "description": "Learning connections, applications, and open questions"}
-  ]
+    {
+      "id": "strategy",
+      "name": "Strategy",
+      "description": "Competitive advantage, business models, and strategic choices",
+      "nameZh": "战略",
+      "descriptionZh": "竞争优势、商业模式与战略选择"
+    },
+    {
+      "id": "leadership",
+      "name": "Leadership & People",
+      "description": "Teams, culture, negotiation, and organizational change",
+      "nameZh": "领导力与人才",
+      "descriptionZh": "团队、文化、谈判与组织变革"
+    },
+    {
+      "id": "finance",
+      "name": "Finance & Accounting",
+      "description": "Financial decisions, valuation, and performance",
+      "nameZh": "财务与会计",
+      "descriptionZh": "财务决策、估值与绩效"
+    },
+    {
+      "id": "marketing",
+      "name": "Marketing & Customers",
+      "description": "Customer insight, positioning, and growth",
+      "nameZh": "营销与客户",
+      "descriptionZh": "客户洞察、定位与增长"
+    },
+    {
+      "id": "operations",
+      "name": "Operations & Execution",
+      "description": "Processes, supply chains, and delivery",
+      "nameZh": "运营与执行",
+      "descriptionZh": "流程、供应链与交付"
+    },
+    {
+      "id": "innovation",
+      "name": "Innovation & Technology",
+      "description": "Entrepreneurship, digital transformation, and AI",
+      "nameZh": "创新与技术",
+      "descriptionZh": "创业、数字化转型与人工智能"
+    },
+    {
+      "id": "economics",
+      "name": "Economics & Global Business",
+      "description": "Markets, institutions, and international business",
+      "nameZh": "经济与全球商业",
+      "descriptionZh": "市场、制度与国际商业"
+    },
+    {
+      "id": "decision-making",
+      "name": "Decision Making & Analytics",
+      "description": "Evidence, models, and choices under uncertainty",
+      "nameZh": "决策与分析",
+      "descriptionZh": "证据、模型与不确定条件下的选择"
+    },
+    {
+      "id": "reflection",
+      "name": "Personal Reflections",
+      "description": "Learning connections, applications, and open questions",
+      "nameZh": "个人学习反思",
+      "descriptionZh": "知识关联、实践应用与待解问题"
+    }
+  ],
+  "descriptionZh": "持续积累概念、框架与反思，将 EMBA 学习连接到日常商业决策。"
 }

@@ -3,14 +3,33 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import { JSDOM } from "jsdom";
 import { home, notePage } from "./views.mjs";
+import { ui } from "../site/i18n.mjs";
+import { label } from "./views.mjs";
 import { loadNotes, renderBody } from "./build.mjs";
 const config = JSON.parse(fs.readFileSync("site/config.json", "utf8"));
 const notes = loadNotes(process.cwd(), config).filter(
   (n) => n.status === "published",
 );
-async function withUI(fn, { query = "", mobile = false } = {}) {
-  const dom = new JSDOM(home(config, notes), {
-    url: "https://example.test/emba_journey/" + query,
+async function withUI(fn, { query = "", mobile = false, locale = "en" } = {}) {
+  const localizedConfig =
+    locale === "zh"
+      ? {
+          ...config,
+          locale,
+          originalBasePath: config.basePath,
+          basePath: config.basePath + "zh/",
+          description: config.descriptionZh,
+          categories: config.categories.map((c) => ({
+            ...c,
+            name: c.nameZh,
+            description: c.descriptionZh,
+          })),
+        }
+      : config;
+  const localizedNotes =
+    locale === "zh" ? loadNotes(process.cwd(), localizedConfig, "zh") : notes;
+  const dom = new JSDOM(home(localizedConfig, localizedNotes), {
+    url: "https://example.test" + localizedConfig.basePath + query,
   });
   const previous = {};
   for (const [key, value] of Object.entries({
@@ -18,9 +37,15 @@ async function withUI(fn, { query = "", mobile = false } = {}) {
     document: dom.window.document,
     location: dom.window.location,
     history: dom.window.history,
+
     fetch: async () => ({
       ok: true,
-      json: async () => notes.map((n) => ({ ...n, text: n.body })),
+      json: async () =>
+        localizedNotes.map((n) => ({
+          ...n,
+          text: n.body,
+          tagLabels: n.tags.map((t) => ui(locale, label(t))),
+        })),
     }),
   })) {
     previous[key] = globalThis[key];
@@ -131,5 +156,99 @@ test("note contents links have matching unique targets and topic links lead back
     if (n.id === "hofstede-cultural-dimensions")
       assert.equal(doc.querySelectorAll(".concept-map li").length, 3);
     dom.window.close();
+  }
+});
+
+test("Chinese search, tags, categories and dynamic messages are localized", () =>
+  withUI(
+    (window, doc) => {
+      assert.equal(doc.documentElement.lang, "zh-Hans");
+      assert.equal(
+        doc.querySelector("#library-heading").textContent,
+        "全部笔记",
+      );
+      const input = doc.querySelector("#search");
+      input.value = "组织文化";
+      input.dispatchEvent(new window.Event("input"));
+      assert.ok(visible(doc).includes("hofstede-organizational-culture"));
+      assert.match(
+        doc.querySelector("#result-count").textContent,
+        /篇笔记符合搜索条件/,
+      );
+      click(doc, "#clear");
+      click(doc, 'button[data-category="economics"]');
+      assert.equal(
+        doc.querySelector("#library-heading").textContent,
+        "经济与全球商业",
+      );
+      click(doc, 'button[data-tag="organizational-culture"]');
+      assert.equal(visible(doc).length, 0);
+      assert.ok(doc.querySelector('button[aria-label="移除筛选：组织文化"]'));
+      assert.equal(
+        doc.querySelector("#empty h3").textContent,
+        "暂未找到匹配的笔记",
+      );
+    },
+    { locale: "zh" },
+  ));
+
+test("language switch retains current filters and stores explicit choice", () =>
+  withUI(async (window, doc) => {
+    for (const a of doc.querySelectorAll("a[data-locale]"))
+      a.addEventListener("click", (e) => e.preventDefault());
+    await import("../site/locale.js?test=" + Math.random());
+    click(doc, 'button[data-category="economics"]');
+    const chinese = doc.querySelector('[data-locale="zh"]');
+    chinese.click();
+    assert.equal(new URL(chinese.href).pathname, "/emba_journey/zh/");
+    assert.equal(new URL(chinese.href).search, "?category=economics");
+    assert.equal(window.localStorage.getItem("emba-locale"), "zh");
+  }));
+
+test("Chinese note navigation, diagrams and source labels stay localized with English counterparts", () => {
+  const zhConfig = {
+    ...config,
+    locale: "zh",
+    originalBasePath: config.basePath,
+    basePath: config.basePath + "zh/",
+    description: config.descriptionZh,
+    categories: config.categories.map((c) => ({
+      ...c,
+      name: c.nameZh,
+      description: c.descriptionZh,
+    })),
+  };
+  const zhNotes = loadNotes(process.cwd(), zhConfig, "zh");
+  for (const n of zhNotes) {
+    const doc = new JSDOM(
+      notePage(zhConfig, n, zhNotes, renderBody(n, zhNotes)),
+    ).window.document;
+    assert.equal(doc.documentElement.lang, "zh-Hans");
+    assert.equal(
+      doc.querySelector('a[data-locale="en"]').getAttribute("href"),
+      "/emba_journey/notes/" + n.id + ".html",
+    );
+    assert.equal(
+      doc.querySelector('a[data-locale="zh"]').getAttribute("aria-current"),
+      "true",
+    );
+    assert.equal(doc.querySelector(".breadcrumbs a").textContent, "知识库");
+    assert.equal(
+      doc.querySelector(".mobile-toc summary").textContent,
+      "本页目录",
+    );
+    for (const a of doc.querySelectorAll('a[href^="#"]'))
+      assert.ok(doc.getElementById(a.getAttribute("href").slice(1)));
+    for (const a of doc.querySelectorAll('.related-card,.prose a[href^="./"]'))
+      assert.ok(
+        zhNotes.some(
+          (note) => "./" + note.id + ".html" === a.getAttribute("href"),
+        ),
+      );
+    if (n.id === "hofstede-cultural-dimensions")
+      assert.match(
+        doc.querySelector(".concept-map figcaption").textContent,
+        /文化框架/,
+      );
   }
 });

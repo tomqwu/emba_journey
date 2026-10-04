@@ -193,3 +193,9 @@ test("repeated headings receive unique anchor IDs", () => {
   assert.match(html, /id="repeat"/);
   assert.match(html, /id="repeat-2"/);
 });
+
+test("published notes require a matching Chinese counterpart", () =>
+  fixture((dir) => {
+    fs.rmSync(path.join(dir, "content/notes/zh/using-this-knowledge-base.md"));
+    assert.throws(() => build(dir), /missing published Chinese translation/);
+  }));

@@ -39,3 +39,7 @@ Source summaries and personal reflections stay distinct. Missing information is 
 In this repository's Codex chat, say: “Capture this for my EMBA knowledge base,” and attach or paste the material. You can also specify a course, category, or business application. The repository instructions route the agent to the capture skill.
 
 All authored documents are Markdown. Build and validation run locally before publishing the site. Draft notes are excluded from the site, but any file committed to this public repository is publicly accessible.
+
+## Choose your language
+
+Use EN / 中文 at the top of any page to switch the whole library's language. English and Chinese notes share topic identifiers and related-note connections, each with a complete body. Your browser remembers the preference selected through the language buttons.
