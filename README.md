@@ -25,6 +25,8 @@ incoming/                      Ignored local originals, if supplied
  dist/                         Ignored generated site
 ```
 
+The interface provides subject navigation, clickable topic tags, combined filters, relevance sorting, and a contents list for notes. See [site/DESIGN.md](site/DESIGN.md) for interface conventions and Markdown diagrams.
+
 One primary category per note; tags, course, source references, and related IDs support connections. Supported note types: concept, lecture, article, case, reflection, guide. `published` notes appear on the site; `draft` and `review` notes do not. **The repository is public, so drafts committed here are public too.** Do not commit confidential notes or unlicensed source decks.
 
 ## Local commands

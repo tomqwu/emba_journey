@@ -50,6 +50,20 @@ The website uses approximate 0–100 scales for comparison. It describes nationa
 
 The site's multilevel discussion distinguishes individuals, groups, and attributes shared by humans. **Learning implication:** do not substitute national averages for observation of individuals or an organization's working practices. [Source: Levels of analysis](https://geerthofstede.com/research-and-vsm/levels-of-analysis/).
 
+## From framework to observation
+
+```concept-map
+title: Use culture as a question, then test it in context
+steps:
+  - label: Notice a pattern
+    detail: A national framework suggests possible differences in expectations.
+  - label: Ask the team
+    detail: Explore decision roles, disagreement, and uncertainty with actual colleagues.
+  - label: Test a practice
+    detail: Try a concrete change and observe participation and delivery.
+caption: A learning application of the framework, not a causal model or an individual prediction.
+```
+
 ## Application: a cross-border project team
 
 *Hypothetical example and agent interpretation; not an experience supplied by the learner.*
