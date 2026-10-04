@@ -16,7 +16,8 @@ const draft=`---\nid: draft-note\ntitle: Draft\ncategory: strategy\ntags: [ä¸­æ–
 test('build excludes drafts from pages/search and retains production subpath',()=>fixture(dir=>{
   fs.writeFileSync(path.join(dir,'content/notes/draft-note.md'),draft);
   const result=build(dir);
-  assert.equal(result.published.length,1);
+  const expectedIds=loadNotes(root,config).filter(n=>n.status==='published').map(n=>n.id).sort();
+  assert.deepEqual(result.published.map(n=>n.id).sort(),expectedIds);
   assert.ok(!fs.existsSync(path.join(result.web,'notes/draft-note.html')));
   assert.ok(!fs.readFileSync(path.join(result.web,'search.json'),'utf8').includes('draft-note'));
   assert.ok(fs.readFileSync(path.join(result.web,'index.html'),'utf8').includes('/emba_journey/style.css'));
