@@ -1,0 +1,17 @@
+{
+  "title": "EMBA Journey",
+  "description": "A growing collection of ideas, frameworks, and reflections — connecting executive learning with everyday decisions.",
+  "basePath": "/emba_journey/",
+  "repository": "https://github.com/tomqwu/emba_journey",
+  "categories": [
+    {"id": "strategy", "name": "Strategy", "description": "Competitive advantage, business models, and strategic choices"},
+    {"id": "leadership", "name": "Leadership & People", "description": "Teams, culture, negotiation, and organizational change"},
+    {"id": "finance", "name": "Finance & Accounting", "description": "Financial decisions, valuation, and performance"},
+    {"id": "marketing", "name": "Marketing & Customers", "description": "Customer insight, positioning, and growth"},
+    {"id": "operations", "name": "Operations & Execution", "description": "Processes, supply chains, and delivery"},
+    {"id": "innovation", "name": "Innovation & Technology", "description": "Entrepreneurship, digital transformation, and AI"},
+    {"id": "economics", "name": "Economics & Global Business", "description": "Markets, institutions, and international business"},
+    {"id": "decision-making", "name": "Decision Making & Analytics", "description": "Evidence, models, and choices under uncertainty"},
+    {"id": "reflection", "name": "Personal Reflections", "description": "Learning connections, applications, and open questions"}
+  ]
+}

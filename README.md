@@ -1,0 +1,55 @@
+# EMBA Journey
+
+A Markdown knowledge base for executive learning, with a locally built GitHub Pages site.
+
+- Repository: [tomqwu/emba_journey](https://github.com/tomqwu/emba_journey)
+- Site: [EMBA Journey](https://tomqwu.github.io/emba_journey/)
+- Capture workflow: [.agents/skills/emba-capture/SKILL.md](.agents/skills/emba-capture/SKILL.md)
+
+## Capture new learning
+
+Open this repository in Codex and say **“Capture this for my EMBA knowledge base”** with a deck, keyword, article, URL, or rough notes. Optional context: course, date, category, language, or a practical question. `AGENTS.md` routes future agents to the project skill automatically.
+
+The agent reads the source, writes attributed Markdown, separates your reflections from interpretation, connects related notes, validates locally, commits/pushes, publishes, and checks the live result. Unclear keywords or unavailable sources stay provisional. It reports failed stages and asks for missing information when needed.
+
+## Structure
+
+```text
+content/notes/                  Learning notes (Markdown + YAML metadata)
+templates/note.md              Starting template
+site/config.json               Categories and site settings
+site/                          Styles and browser search/filter code
+scripts/                       Local build, validation, and deployment
+.agents/skills/emba-capture/    Reusable capture skill
+incoming/                      Ignored local originals, if supplied
+ dist/                         Ignored generated site
+```
+
+One primary category per note; tags, course, source references, and related IDs support connections. Supported note types: concept, lecture, article, case, reflection, guide. `published` notes appear on the site; `draft` and `review` notes do not. **The repository is public, so drafts committed here are public too.** Do not commit confidential notes or unlicensed source decks.
+
+## Local commands
+
+Requires Node.js 22+; Python 3 is used only for the preview server.
+
+```sh
+npm ci
+npm run check       # behavior tests, metadata/link validation, local HTML build
+npm run preview     # http://localhost:4173/emba_journey/
+```
+
+Copy `templates/note.md` into `content/notes/<stable-id>.md`, fill the metadata and note, then set `status: published` when ready. Sources use `title` plus `url` or `locator`; related entries use note IDs. Use ordinary relative Markdown links between notes. The build checks and converts these to site links. Raw HTML is sanitized.
+
+## Publish
+
+```sh
+git add .
+git commit -m "Capture new EMBA learning"
+git push origin main
+npm run deploy
+```
+
+Deployment re-runs local checks, requires a clean `main` matching the fetched `origin/main`, and pushes only generated files to `gh-pages`. Configure GitHub Pages to publish from `gh-pages` at `/`. `.nojekyll` disables Jekyll compilation. No workflow YAML or application build runs in GitHub Actions; GitHub manages the Pages hosting/deployment infrastructure.
+
+After deployment, check the live home page and changed notes. Hosting propagation can take a few minutes. A successful branch push alone does not confirm live availability. If a step fails, the agent reports it immediately, repairs what it can, and asks about unresolved blockers.
+
+Routine work uses direct commits to `main`. If a PR is used, merge only after local tests and required checks pass. A blocked PR is reported and closed with its branch preserved; no task-created PR remains open.
